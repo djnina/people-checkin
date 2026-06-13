@@ -242,7 +242,6 @@ main {
 
     padding: 20px;
 
-    min-height: 300px;
     max-height: 80vh;
 
     overflow-y: auto;
