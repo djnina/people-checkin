@@ -128,6 +128,10 @@ function openAddModal() {
     document.getElementById("personBirthday").value = "";
     document.getElementById("personNotes").value = "";
     document.getElementById("importantPerson").checked = false;
+    document.getElementById("typeLocal").checked = false;
+    document.getElementById("typeLongDistance").checked = false;
+    document.getElementById("typeProfessional").checked = false;
+    document.getElementById("typeBachata").checked = false;
 
     updateDefaultFrequencies();
 
@@ -159,6 +163,11 @@ function savePerson() {
 
         important:
             document.getElementById("importantPerson").checked,
+        relationshipTypes: [
+            document.getElementById("typeLongDistance").checked ? "longDistance" : null,
+            document.getElementById("typeProfessional").checked ? "professional" : null,
+            document.getElementById("typeBachata").checked ? "bachata" : null
+        ].filter(Boolean),
 
         contactFrequency:
             Number(contactFrequency.value),
@@ -280,6 +289,25 @@ function renderList(
     });
 }
 
+function formatRelationshipTypes(types) {
+
+    if (!types.length) {
+        return "No relationship types";
+    }
+
+    const labels = {
+        local: "📍 Local",
+        longDistance: "🌍 Long Distance",
+        professional: "💼 Professional",
+        bachata: "💃 Bachata"
+    };
+
+    return types
+        .map(type => labels[type] || type)
+        .join(" • ");
+}
+
+
 function openDrawer(person) {
 
     const drawerBody =
@@ -292,6 +320,10 @@ function openDrawer(person) {
             ${categoryDefaults[person.category].label}
         </p>
 
+        <p>
+            ${formatRelationshipTypes(person.relationshipTypes || [])}
+        </p>
+        
         <p>
             Birthday:
             ${person.birthday || "Not set"}
