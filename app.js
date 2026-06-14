@@ -164,6 +164,7 @@ function savePerson() {
         important:
             document.getElementById("importantPerson").checked,
         relationshipTypes: [
+            document.getElementById("typeLocal").checked ? "local" : null,
             document.getElementById("typeLongDistance").checked ? "longDistance" : null,
             document.getElementById("typeProfessional").checked ? "professional" : null,
             document.getElementById("typeBachata").checked ? "bachata" : null
@@ -289,139 +290,153 @@ function renderList(
     });
 }
 
-function formatRelationshipTypes(types) {
+function getLastContact(person) {
 
-    function getLastContact(person) {
+```
+if (!person.contacts || !person.contacts.length) {
+    return null;
+}
 
-    if (!person.contacts || !person.contacts.length) {
-        return null;
-    }
+return person.contacts[
+    person.contacts.length - 1
+];
+```
 
-    return person.contacts[
-        person.contacts.length - 1
-    ];
 }
 
 function getLastMeetup(person) {
 
-    if (!person.meetups || !person.meetups.length) {
-        return null;
-    }
+```
+if (!person.meetups || !person.meetups.length) {
+    return null;
+}
 
-    return person.meetups[
-        person.meetups.length - 1
-    ];
+return person.meetups[
+    person.meetups.length - 1
+];
+```
+
 }
 
 function daysSince(dateString) {
 
-    if (!dateString) {
-        return null;
-    }
+```
+if (!dateString) {
+    return null;
+}
 
-    const date =
-        new Date(dateString);
+const date = new Date(dateString);
 
-    const today =
-        new Date();
+const today = new Date();
 
-    return Math.floor(
-        (today - date)
-        /
-        (1000 * 60 * 60 * 24)
-    );
+return Math.floor(
+    (today - date) /
+    (1000 * 60 * 60 * 24)
+);
+```
+
 }
 
 function humanTimeAgo(dateString) {
 
-    const days =
-        daysSince(dateString);
+```
+const days = daysSince(dateString);
 
-    if (days === null) {
-        return "Never";
-    }
-
-    if (days === 0) {
-        return "Today";
-    }
-
-    if (days === 1) {
-        return "Yesterday";
-    }
-
-    if (days < 7) {
-        return `${days} days ago`;
-    }
-
-    if (days < 30) {
-        return `${Math.floor(days / 7)} weeks ago`;
-    }
-
-    if (days < 365) {
-        return `${Math.floor(days / 30)} months ago`;
-    }
-
-    return `${Math.floor(days / 365)} years ago`;
+if (days === null) {
+    return "Never";
 }
 
-    function logContact(personId) {
+if (days === 0) {
+    return "Today";
+}
 
-    const person =
-        people.find(
-            p => p.id === personId
-        );
+if (days === 1) {
+    return "Yesterday";
+}
 
-    if (!person) {
-        return;
-    }
+if (days < 7) {
+    return `${days} days ago`;
+}
 
-    person.contacts.push(
-        new Date().toISOString()
-    );
+if (days < 30) {
+    return `${Math.floor(days / 7)} weeks ago`;
+}
 
-    savePeople();
+if (days < 365) {
+    return `${Math.floor(days / 30)} months ago`;
+}
 
-    openDrawer(person);
+return `${Math.floor(days / 365)} years ago`;
+```
+
+}
+
+function logContact(personId) {
+
+```
+const person =
+    people.find(p => p.id === personId);
+
+if (!person) {
+    return;
+}
+
+person.contacts.push(
+    new Date().toISOString()
+);
+
+savePeople();
+
+openDrawer(person);
+```
+
 }
 
 function logMeetup(personId) {
 
-    const person =
-        people.find(
-            p => p.id === personId
-        );
+```
+const person =
+    people.find(p => p.id === personId);
 
-    if (!person) {
-        return;
-    }
-
-    const now =
-        new Date().toISOString();
-
-    person.meetups.push(now);
-
-    person.contacts.push(now);
-
-    savePeople();
-
-    openDrawer(person);
+if (!person) {
+    return;
 }
 
-    if (!types.length) {
-        return "No relationship types";
-    }
+const now =
+    new Date().toISOString();
 
-    const labels = {
-        local: "📍 Local",
-        longDistance: "🌍 Long Distance",
-        professional: "💼 Professional",
-        bachata: "💃 Bachata"
-    };
+person.meetups.push(now);
 
-    return types
-        .map(type => labels[type] || type)
-        .join(" • ");
+person.contacts.push(now);
+
+savePeople();
+
+openDrawer(person);
+```
+
 }
+
+function formatRelationshipTypes(types) {
+
+```
+if (!types.length) {
+    return "No relationship types";
+}
+
+const labels = {
+    local: "📍 Local",
+    longDistance: "🌍 Long Distance",
+    professional: "💼 Professional",
+    bachata: "💃 Bachata"
+};
+
+return types
+    .map(type => labels[type] || type)
+    .join(" • ");
+```
+
+}
+
 
 
 function openDrawer(person) {
@@ -464,27 +479,25 @@ function openDrawer(person) {
         </p>
 
         <p>
-            ${person.notes || "No notes"}
-        </p>
-    `;
+    ${person.notes || "No notes"}
+</p>
 
-    personDrawer.classList.add("open");
+<div class="quick-actions">
 
-    <div class="quick-actions">
-
-    <button
-        onclick="logContact('${person.id}')"
-    >
+    <button onclick="logContact('${person.id}')">
         ✅ Contacted Today
     </button>
 
-    <button
-        onclick="logMeetup('${person.id}')"
-    >
+    <button onclick="logMeetup('${person.id}')">
         ☕ Met Up Today
     </button>
 
 </div>
+`;
+
+    personDrawer.classList.add("open");
+
+
 }
 
 document.addEventListener(
