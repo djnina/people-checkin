@@ -291,6 +291,122 @@ function renderList(
 
 function formatRelationshipTypes(types) {
 
+    function getLastContact(person) {
+
+    if (!person.contacts || !person.contacts.length) {
+        return null;
+    }
+
+    return person.contacts[
+        person.contacts.length - 1
+    ];
+}
+
+function getLastMeetup(person) {
+
+    if (!person.meetups || !person.meetups.length) {
+        return null;
+    }
+
+    return person.meetups[
+        person.meetups.length - 1
+    ];
+}
+
+function daysSince(dateString) {
+
+    if (!dateString) {
+        return null;
+    }
+
+    const date =
+        new Date(dateString);
+
+    const today =
+        new Date();
+
+    return Math.floor(
+        (today - date)
+        /
+        (1000 * 60 * 60 * 24)
+    );
+}
+
+function humanTimeAgo(dateString) {
+
+    const days =
+        daysSince(dateString);
+
+    if (days === null) {
+        return "Never";
+    }
+
+    if (days === 0) {
+        return "Today";
+    }
+
+    if (days === 1) {
+        return "Yesterday";
+    }
+
+    if (days < 7) {
+        return `${days} days ago`;
+    }
+
+    if (days < 30) {
+        return `${Math.floor(days / 7)} weeks ago`;
+    }
+
+    if (days < 365) {
+        return `${Math.floor(days / 30)} months ago`;
+    }
+
+    return `${Math.floor(days / 365)} years ago`;
+}
+
+    function logContact(personId) {
+
+    const person =
+        people.find(
+            p => p.id === personId
+        );
+
+    if (!person) {
+        return;
+    }
+
+    person.contacts.push(
+        new Date().toISOString()
+    );
+
+    savePeople();
+
+    openDrawer(person);
+}
+
+function logMeetup(personId) {
+
+    const person =
+        people.find(
+            p => p.id === personId
+        );
+
+    if (!person) {
+        return;
+    }
+
+    const now =
+        new Date().toISOString();
+
+    person.meetups.push(now);
+
+    person.contacts.push(now);
+
+    savePeople();
+
+    openDrawer(person);
+}
+
     if (!types.length) {
         return "No relationship types";
     }
@@ -330,13 +446,17 @@ function openDrawer(person) {
         </p>
 
         <p>
-            Contacts logged:
-            ${person.contacts.length}
+            Last contact:
+                ${humanTimeAgo(
+                getLastContact(person)
+            )}
         </p>
 
         <p>
-            Meetups logged:
-            ${person.meetups.length}
+            Last meetup:
+            ${humanTimeAgo(
+                getLastMeetup(person)
+            )}
         </p>
 
         <p>
@@ -349,6 +469,22 @@ function openDrawer(person) {
     `;
 
     personDrawer.classList.add("open");
+
+    <div class="quick-actions">
+
+    <button
+        onclick="logContact('${person.id}')"
+    >
+        ✅ Contacted Today
+    </button>
+
+    <button
+        onclick="logMeetup('${person.id}')"
+    >
+        ☕ Met Up Today
+    </button>
+
+</div>
 }
 
 document.addEventListener(
