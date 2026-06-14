@@ -201,12 +201,7 @@ function isContactOverdue(person) {
     const lastContact =
         getLastContact(person);
 
-    console.log(
-        person.name,
-        lastContact,
-        daysSince(lastContact),
-        person.contactFrequency
-    );
+    
 
     if (!lastContact) {
         return true;
