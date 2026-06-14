@@ -195,6 +195,96 @@ function savePerson() {
     closeModal();
 }
 
+
+function isContactOverdue(person) {
+
+
+const lastContact =
+    getLastContact(person);
+
+if (!lastContact) {
+    return true;
+}
+
+return (
+    daysSince(lastContact)
+    >
+    person.contactFrequency
+);
+
+
+}
+
+function isMeetupOverdue(person) {
+
+
+const lastMeetup =
+    getLastMeetup(person);
+
+if (!lastMeetup) {
+    return true;
+}
+
+return (
+    daysSince(lastMeetup)
+    >
+    person.meetupFrequency
+);
+
+
+}
+
+function getDaysUntilBirthday(person) {
+
+
+if (!person.birthday) {
+    return null;
+}
+
+const today =
+    new Date();
+
+const birthday =
+    new Date(person.birthday);
+
+const nextBirthday =
+    new Date(
+        today.getFullYear(),
+        birthday.getMonth(),
+        birthday.getDate()
+    );
+
+if (nextBirthday < today) {
+    nextBirthday.setFullYear(
+        today.getFullYear() + 1
+    );
+}
+
+return Math.ceil(
+    (nextBirthday - today)
+    /
+    (1000 * 60 * 60 * 24)
+);
+
+
+}
+
+function birthdaySoon(person) {
+
+
+const days =
+    getDaysUntilBirthday(person);
+
+return (
+    days !== null
+    &&
+    days <= 30
+);
+
+
+}
+
+
 function render() {
 
     const query =
@@ -212,31 +302,56 @@ function render() {
 
             return searchable.includes(query);
         });
+    
+    const attentionPeople =
+filteredPeople.filter(
+isContactOverdue
+);
+
+const meetupPeople =
+filteredPeople.filter(
+isMeetupOverdue
+);
+
+const birthdayPeople =
+filteredPeople.filter(
+birthdaySoon
+);
+
+const everyoneElse =
+filteredPeople.filter(
+person =>
+!isContactOverdue(person)
+&&
+!isMeetupOverdue(person)
+);
+
+
+    
+    renderList(
+    "attentionList",
+    attentionPeople
+);
 
     renderList(
-        "attentionList",
-        filteredPeople
-    );
-
-    renderList(
-        "everyoneList",
-        filteredPeople
-    );
+    "everyoneList",
+    everyoneElse
+);
 
     document.getElementById(
         "plannedList"
     ).innerHTML =
         "<div class='person-card'>Planned items coming in next version</div>";
 
-    document.getElementById(
-        "birthdayList"
-    ).innerHTML =
-        "<div class='person-card'>Birthdays coming in next version</div>";
+   renderList(
+    "birthdayList",
+    birthdayPeople
+);
 
-    document.getElementById(
-        "meetupList"
-    ).innerHTML =
-        "<div class='person-card'>Meetup tracking coming in next version</div>";
+    renderList(
+    "meetupList",
+    meetupPeople
+);
 }
 
 function renderList(
