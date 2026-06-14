@@ -198,21 +198,25 @@ function savePerson() {
 
 function isContactOverdue(person) {
 
+    const lastContact =
+        getLastContact(person);
 
-const lastContact =
-    getLastContact(person);
+    console.log(
+        person.name,
+        lastContact,
+        daysSince(lastContact),
+        person.contactFrequency
+    );
 
-if (!lastContact) {
-    return true;
-}
+    if (!lastContact) {
+        return true;
+    }
 
-return (
-    daysSince(lastContact)
-    >
-    person.contactFrequency
-);
-
-
+    return (
+        daysSince(lastContact)
+        >
+        person.contactFrequency
+    );
 }
 
 function isMeetupOverdue(person) {
