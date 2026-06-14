@@ -292,7 +292,7 @@ function renderList(
 
 function getLastContact(person) {
 
-```
+
 if (!person.contacts || !person.contacts.length) {
     return null;
 }
@@ -300,13 +300,13 @@ if (!person.contacts || !person.contacts.length) {
 return person.contacts[
     person.contacts.length - 1
 ];
-```
+
 
 }
 
 function getLastMeetup(person) {
 
-```
+
 if (!person.meetups || !person.meetups.length) {
     return null;
 }
@@ -314,13 +314,13 @@ if (!person.meetups || !person.meetups.length) {
 return person.meetups[
     person.meetups.length - 1
 ];
-```
+
 
 }
 
 function daysSince(dateString) {
 
-```
+
 if (!dateString) {
     return null;
 }
@@ -333,13 +333,13 @@ return Math.floor(
     (today - date) /
     (1000 * 60 * 60 * 24)
 );
-```
+
 
 }
 
 function humanTimeAgo(dateString) {
 
-```
+
 const days = daysSince(dateString);
 
 if (days === null) {
@@ -367,13 +367,13 @@ if (days < 365) {
 }
 
 return `${Math.floor(days / 365)} years ago`;
-```
+
 
 }
 
 function logContact(personId) {
 
-```
+
 const person =
     people.find(p => p.id === personId);
 
@@ -388,13 +388,13 @@ person.contacts.push(
 savePeople();
 
 openDrawer(person);
-```
+
 
 }
 
 function logMeetup(personId) {
 
-```
+
 const person =
     people.find(p => p.id === personId);
 
@@ -412,14 +412,14 @@ person.contacts.push(now);
 savePeople();
 
 openDrawer(person);
-```
+
 
 }
 
 function formatRelationshipTypes(types) {
 
-```
-if (!types.length) {
+
+if (!types || !types.length) {
     return "No relationship types";
 }
 
@@ -433,11 +433,9 @@ const labels = {
 return types
     .map(type => labels[type] || type)
     .join(" • ");
-```
+
 
 }
-
-
 
 function openDrawer(person) {
 
